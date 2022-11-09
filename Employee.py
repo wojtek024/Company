@@ -1,14 +1,15 @@
 import pandas as pd
-from app import Program
+
 
 class Employee:
+    list_of_employees = []
     Min_salary = 3000
 
     def __init__(self, first_name, last_name, salary):
         self.first_name = first_name
         self.last_name = last_name
-        self.salary = salary
-        Program.list_of_employees.append({'first_name':first_name, 'last_name' : last_name, 'salary' : salary })
+        self.salary = int(salary)
+        Employee.list_of_employees.append({'first_name':first_name, 'last_name' : last_name, 'salary' : salary })
 
     # dodawanie pracowników poprzez zaimportowanie pliku csv
 

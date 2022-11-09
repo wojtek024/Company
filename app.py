@@ -4,8 +4,6 @@ from Manager import Manager
 
 
 class Program():
-    list_of_employees = []
-
     def main_menu(self):
 
         pwd = gp.getpass('Wpisz hasło: ')
@@ -22,9 +20,14 @@ class Program():
                 if opcja_2 == 'a' or opcja_2 == 'a)':
                     print('\n' * 20)
                     print('pracownicy')
+                    print(Employee.list_of_employees)
                 elif opcja_2 == 'b' or opcja_2 == 'b)':
                     print('\n' * 20)
                     print('dodaj pracownika')
+                    first_name = input("Give first name: ")
+                    last_name = input("Give last name: ")
+                    salary = input("Give salary: ")
+                    Employee(first_name, last_name, salary)
                 elif opcja_2 == 'c' or opcja_2 == 'c)':
                     print('\n' * 20)
                     print('usuń pracownika')
@@ -39,7 +42,7 @@ class Program():
             elif opcja_1 == '2':
                 print(2)
             else:
-                return
+                break
         else:
             print('You entered wrong password')
             return
@@ -50,8 +53,8 @@ if __name__ == '__main__':
     # Employee('Jan', 'Kowalski', 4652)
     # Employee('Anna', "Nowak", 7896)
     # Employee('Barbara', "Barwinek", 6354
-    run = Program()
-    run.main_menu()
-    # while True:
-    #     Program().main_menu()
-    #     # print('\n' * 20)
+
+    while True:
+        run = Program()
+        run.main_menu()
+        # print('\n' * 20)
