@@ -8,7 +8,7 @@ class Employee:
         self.first_name = first_name
         self.last_name = last_name
         self.salary = salary
-        Program.employees_list.append({'first_name':first_name, 'last_name' : last_name, 'salary' : salary })
+        Program.list_of_employees.append({'first_name':first_name, 'last_name' : last_name, 'salary' : salary })
 
     # dodawanie pracowników poprzez zaimportowanie pliku csv
 
@@ -41,9 +41,8 @@ class Employee:
     def export_employees(self):
         pass
 
-Employee('Wojciech', 'Sajecki', 10000)
-Employee('Jan', 'Kowalski', 4652)
-Employee('Anna', "Nowak", 7896)
-Employee('Barbara', "Barwinek", 6354
-objs = [Employee() for i in range(10)]
-print(objs)
+# Employee('Wojciech', 'Sajecki', 10000)
+# Employee('Jan', 'Kowalski', 4652)
+# Employee('Anna', "Nowak", 7896)
+# Employee('Barbara', "Barwinek", 6354
+
