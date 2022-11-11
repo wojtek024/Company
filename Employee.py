@@ -9,13 +9,15 @@ class Employee:
         self.first_name = first_name
         self.last_name = last_name
         self.salary = int(salary)
-        Employee.list_of_employees.append({'first_name':first_name, 'last_name' : last_name, 'salary' : salary })
+        Employee.list_of_employees.append({'first_name': first_name, 'last_name': last_name, 'salary': salary})
 
     # dodawanie pracowników poprzez zaimportowanie pliku csv
 
     @classmethod
-    def import_emm_from_file(cls, filename, *args, **kwargs):
-        pd.read_csv(filename, *args, **kwargs)
+    def import_employees_from_file(cls, filename, *args, **kwargs):
+        data = pd.read_csv(filename, *args, **kwargs)
+        for index, row in data.iterrows():
+            cls(row['first_name'], row['last_name'], row['salary'])
 
     def give_raise(self, amount=0):
         self.salary = + amount
@@ -39,11 +41,7 @@ class Employee:
         """.format(first_name=self.first_name, last_name=self.last_name, salary=self.salary)
         return emp_str
 
-    def export_employees(self):
-        pass
-
 # Employee('Wojciech', 'Sajecki', 10000)
 # Employee('Jan', 'Kowalski', 4652)
 # Employee('Anna', "Nowak", 7896)
 # Employee('Barbara', "Barwinek", 6354
-
