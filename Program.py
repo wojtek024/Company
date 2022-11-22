@@ -1,10 +1,11 @@
-import pandas as pd
 import getpass as gp
 import time
-import tabulate
+
+import pandas as pd
+from pandas.errors import EmptyDataError
+
 from Employee import Employee
 from Manager import Manager
-from pandas.errors import EmptyDataError
 
 
 class Program:
@@ -16,7 +17,10 @@ class Program:
         try:
             data = pd.read_csv(filename, *args, **kwargs)
             for index, row in data.iterrows():
-                emp = Employee(row['id'], row['first_name'], row['last_name'], row['salary'], row['position'])
+                if row['position'] == "Menadżer":
+                    emp = Manager(row['id'], row['first_name'], row['last_name'], row['salary'], row['position'])
+                else:
+                    emp = Employee(row['id'], row['first_name'], row['last_name'], row['salary'], row['position'])
                 self.employees.append(emp)
         except EmptyDataError:
             print("Brak danych w pliku employees.csv")
@@ -38,7 +42,7 @@ class Program:
     def main_menu(self):
         print('\n1. Panel zarządzania pracownikami\n2. Wyloguj\n')
         opcja_1 = input('Wybierz opcję: ')
-        if opcja_1 == '1':
+        if opcja_1 == '1' or opcja_1 == "1.":
             print('\n' * 20)
             print('Wybierz opcję:\na) Wyświetl informacje o pracownikach\nb) Dodaj pracownika\nc) Edytuj pracownika')
             opcja_2 = input()
@@ -46,37 +50,7 @@ class Program:
                 print('\n' * 20)
                 self.display_employees()
             elif opcja_2 == 'b' or opcja_2 == 'b)':
-                print('\n' * 20)
-                print('Dodaj pracownika')
-                print("Wybierz rodzaj pracownika:\n1. Zwykły pracownik\n2. Menadżer")
-                opcja_3 = input("Opcja: ")
-                if opcja_3 == '1':
-                    id = self.get_max_id() + 1
-                    first_name = input("Podaj imię pracownika: ")
-                    last_name = input("Podaj nazwisko pracownika: ")
-                    salary = input("Podaj wysokość wynagrodzenia: ")
-                    position = input("Podaj stanowisko pracownika: ")
-                    try:
-                        emp = Employee(id, first_name, last_name, salary, position)
-                        self.employees.append(emp)
-                        self.export_employees()
-                    except ValueError:
-                        print("Podano zbyt niskie wynagrodzenie. Wysokość miesięcznego wynagrodzenia powinno wynosić co "
-                              "najmniej 3000. Pracownik nie został dodany do bazy.")
-                elif opcja_3 == '2':
-                    id = self.get_max_id() + 1
-                    first_name = input("Podaj imię menadżera: ")
-                    last_name = input("Podaj nazwisko menadżera: ")
-                    salary = input("Podaj wysokość wynagrodzenia: ")
-                    position = input("Podaj stanowisko pracownika: ")
-                    try:
-                        emp = Manager(id, first_name, last_name, salary, position)
-                        self.employees.append(emp)
-                        self.export_employees()
-                    except ValueError:
-                        print(
-                            "Podano zbyt niskie wynagrodzenie. Wysokość miesięcznego wynagrodzenia powinno wynosić co "
-                            "najmniej 3000. Pracownik nie został dodany do bazy.")
+                self.add_employee()
             elif opcja_2 == 'c' or opcja_2 == 'c)':
                 print('\n' * 20)
                 self.display_employees()
@@ -87,40 +61,97 @@ class Program:
                     print('\n1. Zmień wysokość wynagrodzenia\n2. Zmień dane osobowe\n3. Przyznaj podwyżkę\n'
                           '4. Usuń pracownika z bazy danych')
                     opcja_4 = int(input("Wybierz opcję: "))
-
                     if opcja_4 == 1:
-                        for e in self.employees:
-                            if e.id == employee_id:
-                                e.salary = int(input("Podaj nową wysokość wynagrodzenia: "))
-                                self.export_employees()
-
+                        self.change_salary(employee_id)
                     elif opcja_4 == 2:
-                        for e in self.employees:
-                            if e.id == employee_id:
-                                e.first_name = int(input("Podaj nowe imię: "))
-                                e.last_name = int(input("Podaj nowe nazwisko: "))
-                                self.export_employees()
-
+                        self.change_personal_data(employee_id)
                     elif opcja_4 == 3:
-                        for e in self.employees:
-                            if e.id != employee_id:
-                                continue
-                            e.give_raise(int(input("Podaj kwotę podwyżki: ")))
-                            self.export_employees()
-
+                        self.give_raise_to_employee(employee_id)
                     elif opcja_4 == 4:
                         self.delete_employee(employee_id)
                     else:
                         print('\nPodano złą cyfrę!')
-                    # employee = Employee(employee_data)
             else:
                 print("Podano złą literę!")
-        elif opcja_1 == '2':
-            print('Wylogowano!')
-            self.is_active = False
-            self.export_employees()
+        elif opcja_1 == '2' or opcja_1 == "2.":
+            self.log_out()
         else:
             return
+
+    def log_out(self):
+        print('Wylogowano!')
+        self.is_active = False
+        self.export_employees()
+
+    def add_employee(self):
+        print('\n' * 20)
+        print('Dodaj pracownika')
+        print("Wybierz rodzaj pracownika:\n1. Zwykły pracownik\n2. Menadżer")
+        opcja_3 = input("Opcja: ")
+        if opcja_3 == '1':
+            self.add_ordinary_employee()
+        elif opcja_3 == '2':
+            self.add_manager()
+
+    def change_personal_data(self, employee_id):
+        for e in self.employees:
+            if e.id == employee_id:
+                print('\n' * 2)
+                e.first_name = int(input("Podaj nowe imię: "))
+                e.last_name = int(input("Podaj nowe nazwisko: "))
+                self.export_employees()
+
+    def change_salary(self, employee_id):
+        for e in self.employees:
+            if e.id == employee_id:
+                print('\n' * 2)
+                e.salary = int(input("Podaj nową wysokość wynagrodzenia: "))
+                self.export_employees()
+
+    def add_ordinary_employee(self):
+        print('\n' * 20)
+        id = self.get_max_id() + 1
+        first_name = input("Podaj imię pracownika: ")
+        last_name = input("Podaj nazwisko pracownika: ")
+        salary = input("Podaj wysokość wynagrodzenia: ")
+        position = "Pracownik"
+        try:
+            emp = Employee(id, first_name, last_name, salary, position)
+            self.employees.append(emp)
+            self.export_employees()
+            print("Pracownik został poprawnie dodany do bazy!")
+        except ValueError:
+            print("Podano zbyt niskie wynagrodzenie. Wysokość miesięcznego wynagrodzenia powinno wynosić co"
+                  " najmniej 3000. Pracownik nie został dodany do bazy.")
+
+    def add_manager(self):
+        print('\n' * 20)
+        id = self.get_max_id() + 1
+        first_name = input("Podaj imię menadżera: ")
+        last_name = input("Podaj nazwisko menadżera: ")
+        salary = input("Podaj wysokość wynagrodzenia: ")
+        position = "Menadżer"
+        try:
+            emp = Manager(id, first_name, last_name, salary, position)
+            self.employees.append(emp)
+            self.export_employees()
+            print("Pracownik został poprawnie dodany do bazy!")
+        except ValueError:
+            print(
+                "Podano zbyt niskie wynagrodzenie. Wysokość miesięcznego wynagrodzenia powinno wynosić co "
+                "najmniej 3000. Pracownik nie został dodany do bazy.")
+
+    def give_raise_to_employee(self, employee_id):
+        for e in self.employees:
+            if e.id != employee_id:
+                continue
+            print('\n' * 2)
+            if e.position == "Menadżer":
+                e.give_raise(int(input("Podaj kwotę podwyżki: ")), float(input("Podaj wysokość bonusu: ")))
+                self.export_employees()
+            else:
+                e.give_raise(int(input("Podaj kwotę podwyżki: ")))
+                self.export_employees()
 
     def export_employees(self):
         list_of_dict = [o.to_dict() for o in self.employees]

@@ -13,11 +13,12 @@ class Employee:
         Employee name: {first_name}
         Employee last name: {last_name}
         Employee salary: {salary}
-        """.format(first_name=self.first_name, last_name=self.last_name, salary=self.salary)
+        Employee position: {position}
+        """.format(first_name=self.first_name, last_name=self.last_name, salary=self.salary, position=self.position)
         return emp_str
 
     def give_raise(self, amount=0):
-        self.salary = + amount
+        self.salary += amount
 
     def to_dict(self):
         emp_dict = {"id": self.id, "first_name": self.first_name, "last_name": self.last_name, "salary": self.salary,

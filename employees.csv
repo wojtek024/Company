@@ -1,3 +1,5 @@
-id,first_name,last_name,salary
-1,Jan,Kowalski,3000
-2,Wojciech,Sajecki,10000
+id,first_name,last_name,salary,position
+1,Jan,Kowalski,3000,Pracownik
+2,Wojciech,Sajecki,11200,Menadżer
+3,Anna,Nowak,5200,Pracownik
+4,Olga,Zott,7800,Menadżer
