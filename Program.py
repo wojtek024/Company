@@ -28,7 +28,7 @@ class Program:
     def log_in(self):
         self.import_employees_from_file('employees.csv')
         pwd = gp.getpass('Wpisz hasło: ')
-        if pwd == 'Wojtek':
+        if pwd == 'Company':
             self.is_active = True
             print('Zalogowano!')
             time.sleep(1)
@@ -55,11 +55,11 @@ class Program:
                 print('\n' * 20)
                 self.display_employees()
                 employee_id = int(input("Wybierz id pracownika:"))
-                if employee_id == '':
-                    raise ValueError("Invalid employee id")
+                if employee_id == '' or employee_id > self.get_max_id():
+                    print("Podano nieprawidłowy numer identyfikacyjny pracownika!")
                 else:
                     print('\n1. Zmień wysokość wynagrodzenia\n2. Zmień dane osobowe\n3. Przyznaj podwyżkę\n'
-                          '4. Usuń pracownika z bazy danych')
+                          '4. Usuń pracownika z bazy danych\n5. Powrót do menu głównego')
                     opcja_4 = int(input("Wybierz opcję: "))
                     if opcja_4 == 1:
                         self.change_salary(employee_id)
@@ -69,6 +69,8 @@ class Program:
                         self.give_raise_to_employee(employee_id)
                     elif opcja_4 == 4:
                         self.delete_employee(employee_id)
+                    elif opcja_4 == 5:
+                        print("\n")
                     else:
                         print('\nPodano złą cyfrę!')
             else:
@@ -147,7 +149,7 @@ class Program:
                 continue
             print('\n' * 2)
             if e.position == "Menadżer":
-                e.give_raise(int(input("Podaj kwotę podwyżki: ")), float(input("Podaj wysokość bonusu: ")))
+                e.give_raise(int(input("Podaj kwotę podwyżki: ")), float(input("Podaj wysokość bonusu (w zakresie 0-1): ")))
                 self.export_employees()
             else:
                 e.give_raise(int(input("Podaj kwotę podwyżki: ")))
